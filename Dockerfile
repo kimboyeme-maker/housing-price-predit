@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ########## Stage 1: build with aube (reproducible, frozen lockfile) ##########
-FROM node:22-slim AS build
+FROM node:24.16.0-slim AS build
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
