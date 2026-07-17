@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Provision the aube package manager (aqua:jdx/aube) reproducibly via mise.
+      - name: Set up mise + aube
+        uses: jdx/mise-action@v2
+        with:
+          tools: |
+            node = "22"
+            aube = "latest"
+
+      - name: Install dependencies
+        run: aube install --frozen-lockfile
+
+      - name: Lint
+        run: aube run lint
+
+      - name: Type-check & build
+        run: aube run build

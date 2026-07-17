@@ -1,0 +1,82 @@
+// Shared types mirroring the backend contract.
+
+export interface HouseFeatures {
+  square_footage: number
+  bedrooms: number
+  bathrooms: number
+  year_built: number
+  lot_size: number
+  distance_to_city_center: number
+  school_rating: number
+}
+
+export interface PredictionItem {
+  price: number
+  inputs: HouseFeatures
+}
+
+export interface PredictResponse {
+  predictions: PredictionItem[]
+  model_version: string | null
+  requestId: string | null
+}
+
+export interface FeatureStat {
+  min: number
+  max: number
+  mean: number
+}
+
+export interface Metrics {
+  r2: number
+  mae: number
+  rmse: number
+  cv_r2_mean: number
+  n_train: number
+  n_test: number
+}
+
+export interface ModelInfo {
+  model_type: string
+  target: string
+  features: string[]
+  coefficients: Record<string, number>
+  intercept: number
+  metrics: Metrics
+  feature_stats: Record<string, FeatureStat>
+  trained_at: string
+  version: string
+  dataset_rows: number
+}
+
+export interface Health {
+  status: string
+  model_loaded: boolean
+  model_version: string | null
+  uptime_seconds: number
+}
+
+// Normalised error shape assembled from response headers by the API client.
+export interface ApiError {
+  requestId: string
+  errorCode: string
+  errorMessage: string
+  status: number
+  details?: unknown[]
+}
+
+// Field metadata for building the form. Order matches the model feature order.
+export const FEATURE_META: Record<
+  keyof HouseFeatures,
+  { label: string; unit: string; step: number; min: number; max: number }
+> = {
+  square_footage: { label: 'Square Footage', unit: 'sq ft', step: 10, min: 100, max: 100000 },
+  bedrooms: { label: 'Bedrooms', unit: '', step: 1, min: 0, max: 30 },
+  bathrooms: { label: 'Bathrooms', unit: '', step: 0.5, min: 0, max: 30 },
+  year_built: { label: 'Year Built', unit: '', step: 1, min: 1800, max: 2100 },
+  lot_size: { label: 'Lot Size', unit: 'sq ft', step: 50, min: 0, max: 1000000 },
+  distance_to_city_center: { label: 'Distance to City Centre', unit: 'km', step: 0.1, min: 0, max: 500 },
+  school_rating: { label: 'School Rating', unit: '/10', step: 0.1, min: 0, max: 10 },
+}
+
+export const FEATURE_ORDER = Object.keys(FEATURE_META) as (keyof HouseFeatures)[]
