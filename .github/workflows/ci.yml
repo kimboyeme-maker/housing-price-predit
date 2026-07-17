@@ -12,13 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Provision the aube package manager (aqua:jdx/aube) reproducibly via mise.
+      # Provision node + the aube package manager (aqua:jdx/aube) via mise.
+      # Tools are read from mise.toml at the repo root.
       - name: Set up mise + aube
         uses: jdx/mise-action@v2
-        with:
-          tools: |
-            node = "22"
-            aube = "latest"
 
       - name: Install dependencies
         run: aube install --frozen-lockfile
