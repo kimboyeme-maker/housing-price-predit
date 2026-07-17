@@ -7,7 +7,6 @@ import type { ApiError } from '@/lib/types'
 // Relative base by default → dev proxy (/api → :8000) and prod (nginx/Vercel rewrite).
 export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api'
 export const API_DOMAIN = import.meta.env.PROD ? (import.meta.env.VITE_API_DOMAIN as string | undefined) ?? '' : ''
-console.log('%c [ API_DOMAIN ]-10', 'font-size:13px; background:pink; color:#bf2c9f;', import.meta.env.PROD, API_DOMAIN)
 
 export class ApiClientError extends Error implements ApiError {
   /** Correlation identifier shared with backend logs and support tooling. */

@@ -56,7 +56,28 @@ aube run build
 ### Netlify (primary)
 
 Import the repo; Netlify uses `netlify.toml`. Set the project env var
-`VITE_API_URL` to your backend's public URL (e.g. `https://api.your-domain.com`).
+`VITE_API_URL` to the HTTPS backend prefix:
+
+```text
+VITE_API_URL=https://hk.vps.kaeo.app/api
+```
+
+The client appends `/health`, `/model-info`, and `/predict`, producing URLs such as
+`https://hk.vps.kaeo.app/api/health`. Vite injects this value at build time, so changing it requires
+a new Netlify deployment; changing the variable does not modify an already-built JavaScript bundle.
+
+For the GitHub Actions Netlify job, configure:
+
+- Repository variable `NETLIFY_SITE_ID`
+- Repository variable `VITE_API_URL`
+- Repository secret `NETLIFY_AUTH_TOKEN`
+
+The backend must allow the exact Netlify origin through `HPP_CORS_ORIGINS`. Do not include a path
+in the CORS origin: use `https://your-site.netlify.app`, not
+`https://your-site.netlify.app/some/path`.
+
+Because Netlify serves the portal over HTTPS, its browser code cannot call an HTTP backend. Use a
+TLS-enabled API URL; `.app` domains additionally force HTTPS through browser HSTS preload.
 
 ### Docker (self-host)
 
