@@ -66,17 +66,19 @@ export interface ApiError {
 }
 
 // Field metadata for building the form. Order matches the model feature order.
+// `label` is the English fallback; UI resolves display text via i18n key `feature.<name>`.
+// `unitKey` (when set) resolves via i18n key `unit.<unitKey>`.
 export const FEATURE_META: Record<
   keyof HouseFeatures,
-  { label: string; unit: string; step: number; min: number; max: number }
+  { label: string; unitKey?: string; step: number; min: number; max: number }
 > = {
-  square_footage: { label: 'Square Footage', unit: 'sq ft', step: 10, min: 100, max: 100000 },
-  bedrooms: { label: 'Bedrooms', unit: '', step: 1, min: 0, max: 30 },
-  bathrooms: { label: 'Bathrooms', unit: '', step: 0.5, min: 0, max: 30 },
-  year_built: { label: 'Year Built', unit: '', step: 1, min: 1800, max: 2100 },
-  lot_size: { label: 'Lot Size', unit: 'sq ft', step: 50, min: 0, max: 1000000 },
-  distance_to_city_center: { label: 'Distance to City Centre', unit: 'km', step: 0.1, min: 0, max: 500 },
-  school_rating: { label: 'School Rating', unit: '/10', step: 0.1, min: 0, max: 10 },
+  square_footage: { label: 'Square Footage', unitKey: 'sqft', step: 10, min: 100, max: 100000 },
+  bedrooms: { label: 'Bedrooms', step: 1, min: 0, max: 30 },
+  bathrooms: { label: 'Bathrooms', step: 0.5, min: 0, max: 30 },
+  year_built: { label: 'Year Built', step: 1, min: 1800, max: 2100 },
+  lot_size: { label: 'Lot Size', unitKey: 'sqft', step: 50, min: 0, max: 1000000 },
+  distance_to_city_center: { label: 'Distance to City Centre', unitKey: 'km', step: 0.1, min: 0, max: 500 },
+  school_rating: { label: 'School Rating', unitKey: 'rating', step: 0.1, min: 0, max: 10 },
 }
 
 export const FEATURE_ORDER = Object.keys(FEATURE_META) as (keyof HouseFeatures)[]

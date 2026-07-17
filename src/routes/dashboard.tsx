@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { Activity, BarChart3, Database, Gauge, Target } from 'lucide-react'
+import { Trans, useTranslation } from 'react-i18next'
 import {
   Bar,
   BarChart,
@@ -16,9 +17,13 @@ import { StatCard } from '@/components/stat-card'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency, formatNumber } from '@/lib/utils'
+import { useLocale, useMoney } from '@/hooks/useLocale'
+import { formatNumber } from '@/lib/utils'
 
 export function DashboardPage() {
+  const { t } = useTranslation()
+  const locale = useLocale()
+  const money = useMoney()
   const health = useHealth()
   const model = useModelInfo()
 
@@ -26,19 +31,16 @@ export function DashboardPage() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="mt-1 text-muted-foreground">
-            Overview of the housing-price regression model and service health.
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h1>
+          <p className="mt-1 text-muted-foreground">{t('dashboard.subtitle')}</p>
         </div>
-        <div className="flex items-center gap-2">
-          {health.data ? (
-            <Badge variant={health.data.model_loaded ? 'success' : 'destructive'}>
-              <Activity className="mr-1 h-3 w-3" />
-              {health.data.status} · v{health.data.model_version ?? '—'}
-            </Badge>
-          ) : null}
-        </div>
+        {health.data ? (
+          <Badge variant={health.data.model_loaded ? 'success' : 'destructive'}>
+            <Activity className="mr-1 h-3 w-3" />
+            {(health.data.model_loaded ? t('status.ok') : t('status.degraded')) +
+              ` · v${health.data.model_version ?? '—'}`}
+          </Badge>
+        ) : null}
       </header>
 
       {model.isPending ? (
@@ -49,48 +51,54 @@ export function DashboardPage() {
         <>
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
-              label="R² (test)"
-              value={formatNumber(model.data.metrics.r2, 4)}
-              hint={`CV R² ${formatNumber(model.data.metrics.cv_r2_mean, 4)}`}
+              label={t('dashboard.r2')}
+              value={formatNumber(model.data.metrics.r2, 4, locale)}
+              hint={t('dashboard.cvHint', {
+                value: formatNumber(model.data.metrics.cv_r2_mean, 4, locale),
+              })}
               icon={<Target className="h-4 w-4" />}
             />
             <StatCard
-              label="MAE"
-              value={formatCurrency(model.data.metrics.mae)}
-              hint="Mean absolute error"
+              label={t('dashboard.mae')}
+              value={money(model.data.metrics.mae)}
+              hint={t('dashboard.maeHint')}
               icon={<Gauge className="h-4 w-4" />}
             />
             <StatCard
-              label="RMSE"
-              value={formatCurrency(model.data.metrics.rmse)}
-              hint="Root mean squared error"
+              label={t('dashboard.rmse')}
+              value={money(model.data.metrics.rmse)}
+              hint={t('dashboard.rmseHint')}
               icon={<BarChart3 className="h-4 w-4" />}
             />
             <StatCard
-              label="Training rows"
+              label={t('dashboard.rows')}
               value={model.data.dataset_rows}
-              hint={`${model.data.metrics.n_train} train · ${model.data.metrics.n_test} test`}
+              hint={t('dashboard.rowsHint', {
+                train: model.data.metrics.n_train,
+                test: model.data.metrics.n_test,
+              })}
               icon={<Database className="h-4 w-4" />}
             />
           </section>
 
           <Card>
             <CardHeader>
-              <CardTitle>Feature coefficients</CardTitle>
+              <CardTitle>{t('dashboard.coeffTitle')}</CardTitle>
               <CardDescription>
-                Learned weight per feature. See the{' '}
-                <Link to="/model" className="font-medium text-primary hover:underline">
-                  model page
-                </Link>{' '}
-                for full details.
+                <Trans
+                  i18nKey="dashboard.coeffDesc"
+                  components={{
+                    link: <Link to="/model" className="font-medium text-primary hover:underline" />,
+                  }}
+                />
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart
-                  data={Object.entries(model.data.coefficients).map(([name, value]) => ({
-                    name: name.replace(/_/g, ' '),
-                    value,
+                  data={model.data.features.map((f) => ({
+                    name: t(`feature.${f}`),
+                    value: model.data.coefficients[f],
                   }))}
                   layout="vertical"
                   margin={{ left: 40, right: 16 }}
@@ -105,7 +113,7 @@ export function DashboardPage() {
                     fontSize={12}
                   />
                   <Tooltip
-                    formatter={(value) => formatNumber(Number(value), 2)}
+                    formatter={(value) => formatNumber(Number(value), 2, locale)}
                     contentStyle={{
                       background: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
@@ -114,10 +122,14 @@ export function DashboardPage() {
                     }}
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                    {Object.entries(model.data.coefficients).map(([name, value]) => (
+                    {model.data.features.map((f) => (
                       <Cell
-                        key={name}
-                        fill={value >= 0 ? 'hsl(var(--primary))' : 'hsl(var(--destructive))'}
+                        key={f}
+                        fill={
+                          model.data.coefficients[f] >= 0
+                            ? 'hsl(var(--primary))'
+                            : 'hsl(var(--destructive))'
+                        }
                       />
                     ))}
                   </Bar>
@@ -129,23 +141,23 @@ export function DashboardPage() {
           <section className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Estimate a property</CardTitle>
-                <CardDescription>Enter features and get an instant price prediction.</CardDescription>
+                <CardTitle>{t('dashboard.estimateTitle')}</CardTitle>
+                <CardDescription>{t('dashboard.estimateDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Link to="/predict" className={buttonVariants()}>
-                  Go to estimator →
+                  {t('dashboard.goEstimator')}
                 </Link>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Inspect the model</CardTitle>
-                <CardDescription>Coefficients, metrics and training statistics.</CardDescription>
+                <CardTitle>{t('dashboard.inspectTitle')}</CardTitle>
+                <CardDescription>{t('dashboard.inspectDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Link to="/model" className={buttonVariants({ variant: 'outline' })}>
-                  View model info →
+                  {t('dashboard.viewModel')}
                 </Link>
               </CardContent>
             </Card>

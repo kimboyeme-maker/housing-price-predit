@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import {
   Bar,
   BarChart,
@@ -23,10 +24,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { FEATURE_META, type HouseFeatures } from '@/lib/types'
-import { formatCurrency, formatNumber } from '@/lib/utils'
+import { useLocale, useMoney } from '@/hooks/useLocale'
+import { formatNumber } from '@/lib/utils'
 
 export function ModelPage() {
+  const { t } = useTranslation()
+  const locale = useLocale()
+  const money = useMoney()
   const model = useModelInfo()
 
   if (model.isPending) return <LoadingCards count={4} />
@@ -34,7 +38,7 @@ export function ModelPage() {
 
   const m = model.data
   const coeffData = m.features.map((f) => ({
-    name: FEATURE_META[f as keyof HouseFeatures]?.label ?? f,
+    name: t(`feature.${f}`),
     value: m.coefficients[f],
   }))
 
@@ -42,32 +46,34 @@ export function ModelPage() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Model Information</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('model.title')}</h1>
           <p className="mt-1 text-muted-foreground">
-            {m.model_type} · trained {new Date(m.trained_at).toLocaleString()}
+            {t('model.trained', {
+              type: m.model_type,
+              date: new Date(m.trained_at).toLocaleString(locale),
+            })}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary">v{m.version}</Badge>
           <Link to="/predict" className={buttonVariants({ size: 'sm' })}>
-            Try a prediction →
+            {t('model.tryPrediction')}
           </Link>
         </div>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="R² (test)" value={formatNumber(m.metrics.r2, 4)} />
-        <StatCard label="CV R² (5-fold)" value={formatNumber(m.metrics.cv_r2_mean, 4)} />
-        <StatCard label="MAE" value={formatCurrency(m.metrics.mae)} />
-        <StatCard label="RMSE" value={formatCurrency(m.metrics.rmse)} />
+        <StatCard label={t('model.r2')} value={formatNumber(m.metrics.r2, 4, locale)} />
+        <StatCard label={t('model.cvR2')} value={formatNumber(m.metrics.cv_r2_mean, 4, locale)} />
+        <StatCard label={t('model.mae')} value={money(m.metrics.mae)} />
+        <StatCard label={t('model.rmse')} value={money(m.metrics.rmse)} />
       </section>
 
       <Card>
         <CardHeader>
-          <CardTitle>Coefficients</CardTitle>
+          <CardTitle>{t('model.coefficients')}</CardTitle>
           <CardDescription>
-            price ≈ intercept + Σ (coefficient × feature). Intercept ={' '}
-            <span className="font-mono">{formatNumber(m.intercept, 2)}</span>.
+            {t('model.coeffFormula', { intercept: formatNumber(m.intercept, 2, locale) })}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -83,7 +89,7 @@ export function ModelPage() {
                 fontSize={12}
               />
               <Tooltip
-                formatter={(value) => formatNumber(Number(value), 4)}
+                formatter={(value) => formatNumber(Number(value), 4, locale)}
                 contentStyle={{
                   background: 'hsl(var(--card))',
                   border: '1px solid hsl(var(--border))',
@@ -104,30 +110,28 @@ export function ModelPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Feature</TableHead>
-                <TableHead className="text-right">Coefficient</TableHead>
-                <TableHead className="text-right">Min</TableHead>
-                <TableHead className="text-right">Mean</TableHead>
-                <TableHead className="text-right">Max</TableHead>
+                <TableHead>{t('model.colFeature')}</TableHead>
+                <TableHead className="text-right">{t('model.colCoefficient')}</TableHead>
+                <TableHead className="text-right">{t('model.colMin')}</TableHead>
+                <TableHead className="text-right">{t('model.colMean')}</TableHead>
+                <TableHead className="text-right">{t('model.colMax')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {m.features.map((f) => (
                 <TableRow key={f}>
-                  <TableCell className="font-medium">
-                    {FEATURE_META[f as keyof HouseFeatures]?.label ?? f}
-                  </TableCell>
+                  <TableCell className="font-medium">{t(`feature.${f}`)}</TableCell>
                   <TableCell className="text-right font-mono">
-                    {formatNumber(m.coefficients[f], 4)}
+                    {formatNumber(m.coefficients[f], 4, locale)}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    {formatNumber(m.feature_stats[f]?.min ?? 0)}
+                    {formatNumber(m.feature_stats[f]?.min ?? 0, 2, locale)}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    {formatNumber(m.feature_stats[f]?.mean ?? 0)}
+                    {formatNumber(m.feature_stats[f]?.mean ?? 0, 2, locale)}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    {formatNumber(m.feature_stats[f]?.max ?? 0)}
+                    {formatNumber(m.feature_stats[f]?.max ?? 0, 2, locale)}
                   </TableCell>
                 </TableRow>
               ))}

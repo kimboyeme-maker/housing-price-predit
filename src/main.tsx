@@ -3,7 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from '@tanstack/react-router'
 import './index.css'
+import '@/i18n'
+import { CurrencyProvider } from '@/context/currency'
 import { router } from '@/router'
+import { Toaster } from '@/components/ui/toaster'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,7 +17,10 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <CurrencyProvider>
+        <RouterProvider router={router} />
+        <Toaster />
+      </CurrencyProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

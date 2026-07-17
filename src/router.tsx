@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { DashboardPage } from '@/routes/dashboard'
 import { ModelPage } from '@/routes/model'
 import { PredictPage } from '@/routes/predict'
+import i18n from '@/i18n'
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -22,7 +23,7 @@ const rootRoute = createRootRoute({
   notFoundComponent: () => (
     <div className="py-16 text-center">
       <h2 className="text-2xl font-bold">404</h2>
-      <p className="mt-2 text-muted-foreground">Page not found.</p>
+      <p className="mt-2 text-muted-foreground">{i18n.t('errors.HPP-1004')}</p>
     </div>
   ),
 })
