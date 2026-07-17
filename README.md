@@ -25,8 +25,9 @@ selecting rows opens a side-by-side comparison.
 ## API contract
 
 The client (`src/api/client.ts`) reads the backend gateway headers on every response and
-normalises failures into `{ requestId, errorCode, errorMessage }` (surfaced in the UI with
-the requestId for support). Base URL comes from `VITE_API_URL` (default `/api`).
+normalises failures into `{ requestId, errorCode, errorMessage }`. Error codes map to localised
+shadcn-style toast/panel messages; unknown codes use an i18n fallback. The requestId remains visible
+for support. Base URL comes from `VITE_API_URL` (default `/api`).
 
 ## Local development
 
@@ -52,9 +53,9 @@ aube run build
 
 ## Deployment
 
-### Vercel (primary)
+### Netlify (primary)
 
-Import the repo; Vercel uses `vercel.json` (Vite preset). Set the project env var
+Import the repo; Netlify uses `netlify.toml`. Set the project env var
 `VITE_API_URL` to your backend's public URL (e.g. `https://api.your-domain.com`).
 
 ### Docker (self-host)
