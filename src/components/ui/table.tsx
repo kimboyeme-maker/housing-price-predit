@@ -1,3 +1,4 @@
+// Table primitives retain native semantics while applying shared visual tokens.
 import { forwardRef, type HTMLAttributes, type TdHTMLAttributes, type ThHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 
+/** Present one compact model metric with optional context and icon. */
 export function StatCard({
   label,
   value,

@@ -1,3 +1,4 @@
+// Ref-forwarding input primitive preserves native form and accessibility behavior.
 import { forwardRef, type InputHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 

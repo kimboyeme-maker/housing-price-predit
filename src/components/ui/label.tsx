@@ -1,3 +1,4 @@
+// Ref-forwarding label primitive keeps native label/input association intact.
 import { forwardRef, type LabelHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 

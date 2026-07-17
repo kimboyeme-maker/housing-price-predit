@@ -27,6 +27,7 @@ import {
 import { useLocale, useMoney } from '@/hooks/useLocale'
 import { formatNumber } from '@/lib/utils'
 
+/** Render model provenance and parameters for transparent prediction review. */
 export function ModelPage() {
   const { t } = useTranslation()
   const locale = useLocale()
@@ -37,6 +38,7 @@ export function ModelPage() {
   if (model.isError) return <ErrorState error={model.error} onRetry={() => model.refetch()} />
 
   const m = model.data
+  // Reuse one localized coefficient projection for chart and sign coloring.
   const coeffData = m.features.map((f) => ({
     name: t(`feature.${f}`),
     value: m.coefficients[f],

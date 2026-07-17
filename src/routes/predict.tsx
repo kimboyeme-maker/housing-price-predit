@@ -43,6 +43,7 @@ const DEFAULTS: Record<keyof HouseFeatures, string> = {
   school_rating: '7.6',
 }
 
+/** Validate property inputs, request predictions, and manage local comparisons. */
 export function PredictPage() {
   const { t, i18n } = useTranslation()
   const locale = useLocale()
@@ -81,6 +82,7 @@ export function PredictPage() {
     setValues((prev) => ({ ...prev, [f]: v }))
   }
 
+  /** Convert localized form strings into the backend's ordered numeric contract. */
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     const parsed = schema.safeParse(values)
@@ -114,6 +116,7 @@ export function PredictPage() {
   const compareEntries = history.entries.filter((e) => selected.has(e.id))
 
   function toggleSelect(id: string) {
+    // Clone Set so React observes a new identity and schedules a render.
     setSelected((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)

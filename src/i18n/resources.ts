@@ -1,5 +1,6 @@
 // Translation resources (en + zh). Keys grouped by area; values may interpolate {{vars}}.
 
+/** Complete locale catalog; keeping both languages together preserves key parity. */
 export const resources = {
   en: {
     translation: {

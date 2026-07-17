@@ -8,6 +8,7 @@ import { CurrencyProvider } from '@/context/currency'
 import { router } from '@/router'
 import { Toaster } from '@/components/ui/toaster'
 
+// Shared cache prevents duplicate health/model requests across route transitions.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, refetchOnWindowFocus: false },

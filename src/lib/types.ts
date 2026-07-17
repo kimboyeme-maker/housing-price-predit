@@ -1,5 +1,6 @@
 // Shared types mirroring the backend contract.
 
+/** Numeric feature contract accepted by the prediction API. */
 export interface HouseFeatures {
   square_footage: number
   bedrooms: number
@@ -10,23 +11,27 @@ export interface HouseFeatures {
   school_rating: number
 }
 
+/** One API prediction paired with the features that produced it. */
 export interface PredictionItem {
   price: number
   inputs: HouseFeatures
 }
 
+/** Traceable batch response returned by POST /predict. */
 export interface PredictResponse {
   predictions: PredictionItem[]
   model_version: string | null
   requestId: string | null
 }
 
+/** Training range summary used for model inspection. */
 export interface FeatureStat {
   min: number
   max: number
   mean: number
 }
 
+/** Evaluation metrics generated with model artifacts. */
 export interface Metrics {
   r2: number
   mae: number
@@ -36,6 +41,7 @@ export interface Metrics {
   n_test: number
 }
 
+/** Frontend mirror of the backend model metadata contract. */
 export interface ModelInfo {
   model_type: string
   target: string
@@ -49,6 +55,7 @@ export interface ModelInfo {
   dataset_rows: number
 }
 
+/** Backend readiness and loaded artifact version. */
 export interface Health {
   status: string
   model_loaded: boolean
@@ -57,6 +64,7 @@ export interface Health {
 }
 
 // Normalised error shape assembled from response headers by the API client.
+/** Normalized transport failure independent of response-body availability. */
 export interface ApiError {
   requestId: string
   errorCode: string

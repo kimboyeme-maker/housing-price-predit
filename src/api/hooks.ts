@@ -9,6 +9,7 @@ export const queryKeys = {
   modelInfo: ['model-info'] as const,
 }
 
+/** Poll backend readiness so global health badges recover without a reload. */
 export function useHealth() {
   return useQuery({
     queryKey: queryKeys.health,
@@ -17,6 +18,7 @@ export function useHealth() {
   })
 }
 
+/** Cache model metadata because it changes only when artifacts are retrained. */
 export function useModelInfo() {
   return useQuery({
     queryKey: queryKeys.modelInfo,
@@ -25,6 +27,7 @@ export function useModelInfo() {
   })
 }
 
+/** Submit ordered feature batches and expose mutation lifecycle state. */
 export function usePredict() {
   return useMutation({
     mutationFn: (features: HouseFeatures[]) =>

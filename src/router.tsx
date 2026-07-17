@@ -12,6 +12,7 @@ import { ModelPage } from '@/routes/model'
 import { PredictPage } from '@/routes/predict'
 import i18n from '@/i18n'
 
+// Root-level boundaries keep navigation and recovery UI available after route failures.
 const rootRoute = createRootRoute({
   component: Layout,
   // Error boundary at the layout level.

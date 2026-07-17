@@ -4,6 +4,7 @@
 
 export type CurrencyCode = 'USD' | 'CNY' | 'HKD' | 'JPY' | 'CAD' | 'SGD'
 
+/** Currency choices exposed by the global application selector. */
 export const CURRENCIES: { code: CurrencyCode; label: string; flag: string }[] = [
   { code: 'USD', label: 'US Dollar', flag: '🇺🇸' },
   { code: 'CNY', label: 'Chinese Yuan', flag: '🇨🇳' },

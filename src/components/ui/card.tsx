@@ -1,3 +1,4 @@
+// Card primitives expose semantic layout slots without prescribing page content.
 import { forwardRef, type HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 

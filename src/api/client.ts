@@ -6,8 +6,10 @@ import type { ApiError } from '@/lib/types'
 
 // Relative base by default → dev proxy (/api → :8000) and prod (nginx/Vercel rewrite).
 export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api'
+export const API_DOMAIN = import.meta.env.PROD ? (import.meta.env.VITE_API_DOMAIN as string | undefined) ?? '' : ''
 
 export class ApiClientError extends Error implements ApiError {
+  /** Correlation identifier shared with backend logs and support tooling. */
   requestId: string
   errorCode: string
   errorMessage: string
@@ -15,6 +17,7 @@ export class ApiClientError extends Error implements ApiError {
   details?: unknown[]
 
   constructor(e: ApiError) {
+    // Preserve normalized transport metadata when crossing Query error boundaries.
     super(e.errorMessage)
     this.name = 'ApiClientError'
     this.requestId = e.requestId
@@ -56,7 +59,7 @@ async function parseError(res: Response): Promise<ApiClientError> {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response
   try {
-    res = await fetch(`${API_BASE}${path}`, {
+    res = await fetch(`${API_DOMAIN}${API_BASE}${path}`, {
       ...init,
       headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
     })

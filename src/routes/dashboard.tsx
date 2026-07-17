@@ -20,6 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useLocale, useMoney } from '@/hooks/useLocale'
 import { formatNumber } from '@/lib/utils'
 
+/** Summarize service readiness, model quality, and feature influence. */
 export function DashboardPage() {
   const { t } = useTranslation()
   const locale = useLocale()

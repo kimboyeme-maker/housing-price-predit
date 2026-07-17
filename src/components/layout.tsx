@@ -15,6 +15,7 @@ const NAV = [
   { to: '/model', key: 'nav.model', icon: BarChart3 },
 ] as const
 
+/** Persist explicit theme choice while respecting system preference on first visit. */
 function useTheme() {
   const [dark, setDark] = useState(
     () =>
@@ -34,6 +35,7 @@ function useTheme() {
 const selectCls =
   'h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
+/** Shared application shell for navigation, settings, health, and child routes. */
 export function Layout() {
   const { t, i18n } = useTranslation()
   const { pathname } = useRouterState({ select: (s) => s.location })

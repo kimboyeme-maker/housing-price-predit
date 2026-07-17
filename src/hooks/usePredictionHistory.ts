@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { HouseFeatures } from '@/lib/types'
 
 export interface HistoryEntry {
+  /** Client-generated identity used for selection and deletion. */
   id: string
   createdAt: number
   price: number
@@ -13,8 +14,10 @@ export interface HistoryEntry {
 }
 
 const STORAGE_KEY = 'hpp.history.v1'
+// Bound storage growth because feature snapshots are duplicated per estimate.
 const MAX_ENTRIES = 50
 
+/** Parse persisted entries defensively; corrupt browser data behaves as empty history. */
 function read(): HistoryEntry[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -24,6 +27,7 @@ function read(): HistoryEntry[] {
   }
 }
 
+/** Manage bounded, cross-tab prediction history in browser storage. */
 export function usePredictionHistory() {
   const [entries, setEntries] = useState<HistoryEntry[]>(read)
 
