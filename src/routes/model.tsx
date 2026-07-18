@@ -92,11 +92,15 @@ export function ModelPage() {
               />
               <Tooltip
                 formatter={(value) => formatNumber(Number(value), 4, locale)}
+                cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.25 }}
                 contentStyle={{
                   background: 'hsl(var(--card))',
                   border: '1px solid hsl(var(--border))',
                   borderRadius: 8,
+                  color: 'hsl(var(--card-foreground))',
                 }}
+                labelStyle={{ color: 'hsl(var(--card-foreground))' }}
+                itemStyle={{ color: 'hsl(var(--card-foreground))' }}
               />
               <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                 {coeffData.map((d) => (

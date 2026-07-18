@@ -241,11 +241,15 @@ export function PredictPage() {
                         />
                         <Tooltip
                           formatter={(value) => money(Number(value))}
+                          cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.25 }}
                           contentStyle={{
                             background: 'hsl(var(--card))',
                             border: '1px solid hsl(var(--border))',
                             borderRadius: 8,
+                            color: 'hsl(var(--card-foreground))',
                           }}
+                          labelStyle={{ color: 'hsl(var(--card-foreground))' }}
+                          itemStyle={{ color: 'hsl(var(--card-foreground))' }}
                         />
                         <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                           {contributions.map((d) => (

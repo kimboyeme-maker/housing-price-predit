@@ -24,10 +24,11 @@ selecting rows opens a side-by-side comparison.
 
 ## API contract
 
-The client (`src/api/client.ts`) reads the backend gateway headers on every response and
-normalises failures into `{ requestId, errorCode, errorMessage }`. Error codes map to localised
-shadcn-style toast/panel messages; unknown codes use an i18n fallback. The requestId remains visible
-for support. Base URL comes from `VITE_API_URL` (default `/api`).
+The client (`src/api/client.ts`) reads transport metadata from response headers and normalises
+failures into `{ requestId, errorCode, errorMessage }` for UI handling. Error codes map to localised
+shadcn-style toast/panel messages; unknown codes use an i18n fallback. `requestId` comes exclusively
+from `X-Request-ID`, remains visible for support, and is not part of any backend business response
+body. Base URL comes from `VITE_API_URL` (default `/api`).
 
 ## Local development
 

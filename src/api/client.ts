@@ -29,7 +29,7 @@ export class ApiClientError extends Error implements ApiError {
 }
 
 async function parseError(res: Response): Promise<ApiClientError> {
-  let requestId = res.headers.get('X-Request-ID') ?? ''
+  const requestId = res.headers.get('X-Request-ID') ?? ''
   let errorCode = res.headers.get('X-Error-Code') ?? `HTTP-${res.status}`
   let errorMessage = res.headers.get('X-Error-Message') ?? res.statusText
   let details: unknown[] | undefined
@@ -38,7 +38,6 @@ async function parseError(res: Response): Promise<ApiClientError> {
   try {
     const body = await res.json()
     if (body?.error) {
-      requestId = body.requestId ?? requestId
       errorCode = body.error.code ?? errorCode
       errorMessage = body.error.message ?? errorMessage
       details = body.error.details

@@ -21,7 +21,6 @@ export interface PredictionItem {
 export interface PredictResponse {
   predictions: PredictionItem[]
   model_version: string | null
-  requestId: string | null
 }
 
 /** Training range summary used for model inspection. */

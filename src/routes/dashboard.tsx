@@ -115,12 +115,15 @@ export function DashboardPage() {
                   />
                   <Tooltip
                     formatter={(value) => formatNumber(Number(value), 2, locale)}
+                    cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.25 }}
                     contentStyle={{
                       background: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: 8,
                       color: 'hsl(var(--card-foreground))',
                     }}
+                    labelStyle={{ color: 'hsl(var(--card-foreground))' }}
+                    itemStyle={{ color: 'hsl(var(--card-foreground))' }}
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {model.data.features.map((f) => (
